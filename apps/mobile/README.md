@@ -1,5 +1,7 @@
 # T3 Code Mobile
 
+For the Shore Performance build, see [SP3 setup and release](../../docs/operations/sp3.md).
+
 > [!NOTE]
 > To install the released app from the App Store or Google Play, see [Mobile app](../../docs/user/install.md#mobile-app). This guide covers building it from source.
 

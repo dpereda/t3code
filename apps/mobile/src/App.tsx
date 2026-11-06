@@ -2,6 +2,7 @@ import { installPermissionUpdateNotice } from "./features/connection/permissionU
 import { installComposerAttachmentUploads } from "./state/composer-attachment-uploads";
 import { installThreadOutboxDelivery } from "./state/threadOutboxDelivery";
 import * as Linking from "expo-linking";
+import Constants from "expo-constants";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import { StatusBar } from "react-native";
@@ -125,10 +126,12 @@ function getAppStateFromPath(path: string, options: Parameters<typeof getStateFr
 const appLinking = {
   prefixes: [
     Linking.createURL("/"),
-    "t3code://",
-    "t3code-dev://",
-    "t3code-preview://",
-    DEFAULT_HOSTED_APP_URL,
+    ...(Constants.expoConfig?.extra?.mobileFork
+      ? []
+      : ["t3code://", "t3code-dev://", "t3code-preview://", DEFAULT_HOSTED_APP_URL]),
+    ...(typeof Constants.expoConfig?.extra?.hostedAppHost === "string"
+      ? [`https://${Constants.expoConfig.extra.hostedAppHost}`]
+      : []),
   ],
   config: { initialRouteName: "Home" },
   filter: (url: string) => shouldHandleAppLink(url, hasCloudPublicConfig()),

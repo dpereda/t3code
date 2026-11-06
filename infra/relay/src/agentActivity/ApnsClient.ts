@@ -78,14 +78,15 @@ const decodeApnsErrorResponseJson = Schema.decodeUnknownOption(
     }),
   ),
 );
-function contentState(state: RelayAgentActivityAggregateState) {
+function contentState(state: RelayAgentActivityAggregateState, appScheme?: string) {
   return {
     name: LIVE_ACTIVITY_NAME,
-    props: JSON.stringify(state),
+    props: JSON.stringify({ ...state, ...(appScheme ? { appScheme } : {}) }),
   };
 }
 
 interface LiveActivityRequestBase {
+  readonly appScheme?: string;
   readonly token: string;
   readonly nowEpochSeconds: number;
   readonly nowIso: string;
@@ -178,7 +179,7 @@ function buildLiveActivityRequest(input: MakeLiveActivityRequestInput): ApnsLive
         aps: {
           timestamp,
           event: "end",
-          ...(input.state ? { "content-state": contentState(input.state) } : {}),
+          ...(input.state ? { "content-state": contentState(input.state, input.appScheme) } : {}),
           ...(input.alert ? liveActivityAlertPayload(input.alert) : {}),
           "dismissal-date":
             timestamp + (input.state ? DISMISS_AFTER_SECONDS : CONTENTLESS_DISMISS_AFTER_SECONDS),
@@ -197,7 +198,7 @@ function buildLiveActivityRequest(input: MakeLiveActivityRequestInput): ApnsLive
         timestamp,
         event: input.event,
         ...(input.event === "update" && input.alert ? liveActivityAlertPayload(input.alert) : {}),
-        "content-state": contentState(state),
+        "content-state": contentState(state, input.appScheme),
         "stale-date": timestamp + STALE_AFTER_SECONDS,
       },
     },

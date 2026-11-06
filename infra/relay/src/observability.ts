@@ -6,6 +6,7 @@ import * as Axiom from "@alchemy.run/axiom";
 import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Output from "alchemy/Output";
 import * as Cause from "effect/Cause";
+import * as Config from "effect/Config";
 import * as Effect from "effect/Effect";
 import * as Exit from "effect/Exit";
 import * as Option from "effect/Option";
@@ -114,6 +115,11 @@ export const RelayObservability = Effect.gen(function* () {
     mobileSourceMaps,
   } as const;
 });
+
+export const OptionalRelayObservability = Config.Boolean("RELAY_AXIOM_ENABLED").pipe(
+  Config.withDefault(true),
+  Effect.flatMap((enabled) => (enabled ? RelayObservability : Effect.succeed(null))),
+);
 
 const mobileSourceMapsBucketName = (stage: string) =>
   relayResourceNameForStage("t3-code-mobile-sourcemaps", stage);

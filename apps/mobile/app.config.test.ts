@@ -6,7 +6,11 @@ import assetLinks from "../web/public/.well-known/assetlinks.json";
 
 // Keep config parsing independent of local env files and build credentials.
 vi.mock("../../scripts/lib/public-config.ts", () => ({
-  loadRepoEnv: () => ({ APP_VARIANT: process.env.APP_VARIANT }),
+  loadRepoEnv: () => ({
+    APP_VARIANT: process.env.APP_VARIANT,
+    T3CODE_MOBILE_FORK: process.env.T3CODE_MOBILE_FORK,
+    T3CODE_MOBILE_APPLE_TEAM_ID: process.env.T3CODE_MOBILE_APPLE_TEAM_ID,
+  }),
 }));
 
 afterEach(() => {
@@ -44,4 +48,24 @@ it.each([
     { scheme: "https", host, pathPrefix: "/threads/" },
   ]);
   expect(assetLinks.map((link) => link.target.package_name)).toContain(identifier);
+});
+
+it("builds the fork with independent signing, links and updates while retaining push capabilities", async () => {
+  vi.stubEnv("T3CODE_MOBILE_FORK", "1");
+  vi.stubEnv("T3CODE_MOBILE_APPLE_TEAM_ID", "ABC1234567");
+  const config = await loadConfig("production");
+  expect(config.name).toBe("SP3");
+  expect(config.scheme).toBe("sp3");
+  expect(config.ios?.bundleIdentifier).toBe("com.shoreperformance.sp3");
+  expect(config.ios?.appleTeamId).toBe("ABC1234567");
+  expect(config.ios?.entitlements?.["keychain-access-groups"]).toEqual([
+    "$(AppIdentifierPrefix)com.shoreperformance.sp3",
+  ]);
+  expect(config.ios?.associatedDomains).toEqual([]);
+  expect(config.updates?.enabled).toBe(false);
+  expect(config.updates?.url).toBeUndefined();
+  expect(config.owner).toBeUndefined();
+  expect(config.extra?.eas.projectId).toBeUndefined();
+  expect(config.plugins).toContainEqual(expect.arrayContaining(["expo-notifications"]));
+  expect(config.plugins).toContainEqual(expect.arrayContaining(["expo-widgets"]));
 });

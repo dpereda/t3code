@@ -76,6 +76,9 @@ dependencies represented at their boundary rather than mocking internal behavior
 
 ## Deployment
 
+For the SP3 stack using an existing PostgreSQL database and no Axiom deployment,
+see [SP3 setup](../../docs/operations/sp3.md#deploy-the-relay).
+
 The relay deploys with the Alchemy CLI (`vp run --filter t3code-relay deploy` is `alchemy deploy`
 in this directory):
 

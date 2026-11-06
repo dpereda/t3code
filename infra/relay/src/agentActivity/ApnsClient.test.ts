@@ -55,6 +55,7 @@ describe("ApnsClient", () => {
     Effect.gen(function* () {
       const apns = yield* ApnsClient.ApnsClient;
       const request = apns.makeLiveActivityRequest({
+        appScheme: "sp3",
         event: "update",
         token: "token",
         state,
@@ -64,6 +65,8 @@ describe("ApnsClient", () => {
       });
 
       expect(request.priority).toBe("10");
+      const payload = request.payload as { aps: { "content-state": { props: string } } };
+      expect(JSON.parse(payload.aps["content-state"].props).appScheme).toBe("sp3");
       expect(request.payload).toMatchObject({
         aps: {
           event: "update",

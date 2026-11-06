@@ -5,6 +5,14 @@
     "promptToConfigurePushNotifications": false
   },
   "build": {
+    "fork-development": {
+      "extends": "development",
+      "env": { "T3CODE_MOBILE_FORK": "1" }
+    },
+    "fork-production": {
+      "extends": "production",
+      "env": { "T3CODE_MOBILE_FORK": "1" }
+    },
     "development": {
       "corepack": true,
       "env": {
@@ -78,6 +86,9 @@
     }
   },
   "submit": {
+    "fork-production": {
+      "ios": {}
+    },
     "testflight": {
       "extends": "production"
     },

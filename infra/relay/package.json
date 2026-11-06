@@ -4,6 +4,8 @@
   "type": "module",
   "scripts": {
     "deploy": "alchemy deploy",
+    "deploy:self-hosted": "alchemy deploy --config alchemy.self-hosted.ts --stage prod",
+    "db:migrate:self-hosted": "drizzle-kit migrate --config drizzle.self-hosted.config.ts",
     "push:android:smoke": "node scripts/android-push-smoke.ts",
     "push:android:watch": "node scripts/android-push-watch.ts",
     "tunnels:census": "node scripts/tunnel-census.ts",

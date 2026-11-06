@@ -405,6 +405,11 @@ function credentialsForTarget(
 ): RelayConfiguration.ApnsCredentials {
   return {
     ...credentials,
+    ...(credentials.appScheme
+      ? {
+          appScheme: `${credentials.appScheme}${target.bundle_id?.endsWith(".dev") ? "-dev" : target.bundle_id?.endsWith(".preview") ? "-preview" : ""}`,
+        }
+      : {}),
     ...(target.bundle_id ? { bundleId: target.bundle_id } : {}),
     ...(target.aps_environment ? { environment: target.aps_environment } : {}),
   };
@@ -445,9 +450,11 @@ function makeLiveActivityDeliveryRequest(
   apns: Apns.ApnsClient["Service"],
   input: SendLiveActivityDeliveryInput,
   now: DateTime.DateTime,
+  appScheme?: string,
 ) {
   const epochSeconds = Math.floor(now.epochMilliseconds / 1_000);
   const base = {
+    ...(appScheme ? { appScheme } : {}),
     token: input.token,
     nowEpochSeconds: epochSeconds,
     nowIso: DateTime.formatIso(now),
@@ -737,6 +744,7 @@ const make = Effect.gen(function* () {
       apns,
       { ...input, aggregate, alert } as SendLiveActivityDeliveryInput,
       now,
+      credentialsForTarget(config.apns, deliveryTarget).appScheme,
     );
     const result = yield* apns
       .sendLiveActivityRequest({

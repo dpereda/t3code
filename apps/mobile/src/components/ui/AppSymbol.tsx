@@ -134,6 +134,7 @@ import IconWifi from "@tabler/icons-react-native/IconWifi";
 import IconWifiOff from "@tabler/icons-react-native/IconWifiOff";
 import IconWorld from "@tabler/icons-react-native/IconWorld";
 import IconX from "@tabler/icons-react-native/IconX";
+import IconVolume from "@tabler/icons-react-native/IconVolume";
 import type { AndroidSymbol, SFSymbol, SymbolViewProps } from "expo-symbols";
 import { withUniwind } from "uniwind";
 
@@ -263,6 +264,7 @@ const ANDROID_ICON_BY_SF_SYMBOL = {
   "star.fill": IconStarFilled,
   "sun.max": IconSun,
   "stop.fill": IconPlayerStopFilled,
+  "speaker.wave.2": IconVolume,
   target: IconTarget,
   terminal: IconTerminal2,
   "text.alignleft": IconAlignLeft,

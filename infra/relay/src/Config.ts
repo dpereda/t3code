@@ -41,6 +41,7 @@ export const legacyTunnelGraceMinutesConfig = Config.option(
 );
 
 export interface ApnsCredentials {
+  readonly appScheme?: string;
   readonly teamId: string;
   readonly keyId: string;
   readonly privateKey: Redacted.Redacted<string>;
